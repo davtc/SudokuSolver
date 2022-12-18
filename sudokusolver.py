@@ -24,25 +24,32 @@ def get_sudoku_image(url):
         with open('screenshot.png', 'wb') as f:
             f.write(image)
     else:
+        # Increase the window size in case the Sudoku grid is too large to be captured in the screenshot
+        driver.set_window_size(1000, 1000)
         driver.save_screenshot('screenshot.png')
 
     driver.close()
 
+# Calculate the width/height of a rectangle/square from its corner coordinates
+def getDimensions(corners):
+    A, B, C, D = corners
+    width = int(max(np.linalg.norm(A - B), np.linalg.norm(C - D)))
+    height = int(max(np.linalg.norm(A - D), np.linalg.norm(B - C)))
+    return width, height
+
 # Function to transform the perspective of the image to a square(approximately) with corners ABCD which basically crops the Sudoku
 def crop_sudoku_image(image, corners):
-    A, B, C, D = corners[0:4]
-    maxWidth = int(max(np.linalg.norm(A - B), np.linalg.norm(C - D)))
-    maxHeight = int(max(np.linalg.norm(A - D), np.linalg.norm(B - C)))
-    resize = int(maxWidth/2)
-    width = maxWidth + resize
-    height = maxHeight + resize
-    input = np.float32([A, B, C, D])
+    width, height = getDimensions(corners)
+    resize = int(width/2)
+    width += resize
+    height += resize
+    input = np.float32(corners)
     output = np.float32([[0, 0],  [0, height], [width, height], [width, 0]])
 
     matrix = cv2.getPerspectiveTransform(input, output)
-    cropped = cv2.warpPerspective(image, matrix, (width, height))
+    cropped_image = cv2.warpPerspective(image, matrix, (width, height))
 
-    return cropped
+    return cropped_image
 
 # Function to find the corners of the Sudoku grid.
 def find_sudoku_corners():
@@ -50,31 +57,29 @@ def find_sudoku_corners():
     image = cv2.imread('screenshot.png')
     image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     # Turn the image into a binary black/white image
-    threshold = cv2.adaptiveThreshold(image_gray,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY_INV,21,2)
+    threshold_image = cv2.adaptiveThreshold(image_gray,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY_INV,21,2)
     # Find the corners of the Sudoku grid
-    corners, _ = cv2.findContours(threshold, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    corners = sorted(corners, key=cv2.contourArea, reverse=True)
+    contours, _ = cv2.findContours(threshold_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours = sorted(contours, key=cv2.contourArea, reverse=True)
 
-    for corner in corners:
-        length = cv2.arcLength(corner, True)
-        approx_corners = cv2.approxPolyDP(corner, 0.02 * length, True)
-        if len(approx_corners) == 4:
-            A, B, C, D = approx_corners[0:4]
-            maxWidth = max(np.linalg.norm(A - B), np.linalg.norm(C - D))
-            maxHeight = max(np.linalg.norm(A - D), np.linalg.norm(B - C))
-            if abs(maxHeight//maxWidth - 1) <= 0.05:
-                break
-    return threshold, approx_corners
-
+    for contour in contours:
+        length = cv2.arcLength(contour, True)
+        corners = cv2.approxPolyDP(contour, 0.02 * length, True)
+        # Return early if the contour is a square
+        if len(corners) == 4:
+            width, height = getDimensions(corners)
+            if abs(float(height/width - 1)) <= 0.1:
+                return threshold_image, corners
+    return threshold_image, contour
 # Function to process the Sudoku image so that it can be parsed into an OCR model and have the numbers be recognized
 def process_sudoku_image():
-    threshold, corners = find_sudoku_corners()
-    cropped = crop_sudoku_image(threshold, corners)
-    cv2.imshow('output', cropped)
+    threshold_image, corners = find_sudoku_corners()
+    cropped_image = crop_sudoku_image(threshold_image, corners)
+    cv2.imshow('output', cropped_image)
     cv2.waitKey(5000)
     
 def main():
-    get_sudoku_image('https://www.sudoku.com/')
+    get_sudoku_image('https://sudoku.com.au/')
     process_sudoku_image()
 
 if __name__ == '__main__':
