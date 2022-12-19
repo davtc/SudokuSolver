@@ -5,6 +5,8 @@ from selenium.webdriver.common.by import By
 import cv2
 import numpy as np
 
+import easyocr
+
 # Use the url website with a Sudoku puzzle as the input
 # Take a screenshot of sudoku puzzle from domain https://sudoku.com/
 def get_sudoku_image(url):
@@ -75,9 +77,14 @@ def split_sudoku(image):
         for j in range(0, 900, 100):
             row = i//100
             col = j//100
-            cell = image[i:i+99, j:j+99]
+            cell = image[i+15:i+84, j+15:j+84]
             # cell = cv2.resize(cell, (200, 200))
             cv2.imwrite(f'images/grid/{row}-{col}.png', cell)
+
+def parse_sudoku(reader):
+    image = 'images/grid/0-1.png'
+    result = reader.readtext(image, allowlist ='0123456789')
+    print(result)
 
 # Function to process the Sudoku image so that it can be parsed into an OCR model and have the numbers be recognized
 def process_sudoku_image():
@@ -85,6 +92,8 @@ def process_sudoku_image():
     crop_image = crop_sudoku_image(threshold_image, corners)
     cv2.imwrite('images/processed.png', crop_image)
     split_sudoku(crop_image)
+    reader = easyocr.Reader(['en'])
+    parse_sudoku(reader)
     
 def main():
     # get_sudoku_image('https://websudoku.com/')
