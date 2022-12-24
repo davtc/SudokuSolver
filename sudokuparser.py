@@ -129,7 +129,7 @@ def process_sudoku_image():
 
 # Main function for testing
 def get_sudoku():
-    # get_sudoku_image('https://websudoku.com/')
+    get_sudoku_image('https://websudoku.com/')
     sudoku = process_sudoku_image()
     return sudoku
 
