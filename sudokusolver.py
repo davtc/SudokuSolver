@@ -84,25 +84,51 @@ def scan(sudoku, values):
     while updates != 0:
         updates = 0
 
-        for cell, nums in values.copy().items():
+        for cell, nums in sorted(values.copy().items(), key=lambda x: len(x[1])):
             if len(nums) == 1:
                 digit = nums.pop()
                 sudoku[cell] = digit
                 values = remove_value(values, digit, cell[0], cell[1])
                 values.pop(cell)
                 updates += 1
+            elif len(nums) == 0:
+                return False
 
-    return sudoku, values
+    return sudoku, dict(sorted(values.items(), key=lambda x: len(x[1])))
 
-def solve_sudoku(sudoku):
-    values = initialise_possible_values(sudoku)
-    solution, values = scan(sudoku, values)
-    
-    return solution
+def solve_sudoku(sudoku, values):
+    if len(values) > 0:
+        cell, nums = list(values.items())[0]
+        if len(nums) > 0:
+            temp_values = values.copy()
+            n = nums.pop()
+            sudoku[cell] = n
+            temp_values.pop(cell)
+            temp_values = remove_value(temp_values, n, cell[0], cell[1])
+            if not scan(sudoku, temp_values):
+                sudoku, values = solve_sudoku(sudoku, values)
+            else:
+                sudoku, values = scan(sudoku, temp_values)
+                sudoku, values = solve_sudoku(sudoku, values)
+    else:
+        return (sudoku, values)
+
+    return (sudoku, values)
+
+def check_solved(sudoku):
+    for i in range(9):
+        if np.sum(split_row(sudoku, i)) != 45:
+            return False
+        if np.sum(split_col(sudoku, i)) != 45:
+            return False
+        if np.sum(split_square(sudoku, i)) != 45:
+            return False
+
+    return True
 
 def main():
-    sudoku = get_sudoku()
-    """ sudoku = np.array([[0, 1, 0, 0, 0, 9, 0, 3, 0], 
+    #sudoku = get_sudoku()
+    sudoku = np.array([[0, 1, 0, 0, 0, 9, 0, 3, 0], 
                         [6, 0, 0, 3, 0, 0, 8, 1, 2],
                         [0, 0, 0, 1, 0, 8, 7, 0, 0],
                         [7, 2, 0, 4, 8, 0, 0, 9, 0],
@@ -110,10 +136,13 @@ def main():
                         [0, 5, 0, 0, 1, 6, 0, 7, 3],
                         [0, 0, 3, 7, 0, 5, 0, 0, 0],
                         [2, 4, 7, 0, 0, 1, 0, 0, 8],
-                        [0, 9, 0, 8, 0, 0, 0, 4, 0]]) """
+                        [0, 9, 0, 8, 0, 0, 0, 4, 0]])
     print(sudoku)
     print(validate_sudoku(sudoku))
-    print(solve_sudoku(sudoku))
+    values = initialise_possible_values(sudoku)
+    solution, values = solve_sudoku(sudoku, values)
+    print(solution)
+    print(check_solved(solution))
 
 if __name__ == '__main__':
     main()
