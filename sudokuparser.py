@@ -128,8 +128,8 @@ def process_sudoku_image():
     return sudoku
 
 # Main function for testing
-def get_sudoku():
-    get_sudoku_image('https://sudoku.com/evil/')
+def get_sudoku(url):
+    get_sudoku_image(url)
     sudoku = process_sudoku_image()
     return sudoku
 

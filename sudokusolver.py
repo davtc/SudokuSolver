@@ -1,6 +1,7 @@
 import numpy as np
 from sudokuparser import get_sudoku
 import copy
+import time
 
 # Return a row of the Sudoku at a specified index.
 def split_row(sudoku, row):
@@ -56,7 +57,7 @@ def get_possible_values(sudoku, row, col):
 
 # Generate a dictionary containing the set of possible values at all cells 
 # sorted so that the lowest set of possible values is the first entry.
-def possible_values(sudoku):
+def init_possible_values(sudoku):
     values = {}
 
     for i in range(9):
@@ -90,8 +91,8 @@ def remove_value(values, digit, row, col):
     return values
 
 # Find all the cells with only 1 possible value and add it to the Sudoku 
-# solution.
-def scan(sudoku, values):
+# solution. This repeats until there are no easy updates to be made.
+def scan_sudoku(sudoku, values):
     updates = -1
 
     while updates != 0:
@@ -126,7 +127,7 @@ def solve_sudoku(sudoku, values):
             temp_values.pop(cell)
             temp_sudoku[cell] = n
             temp_values = remove_value(temp_values, n, cell[0], cell[1])
-            temp_sudoku, temp_values = scan(temp_sudoku, temp_values)
+            temp_sudoku, temp_values = scan_sudoku(temp_sudoku, temp_values)
             # Return if the sudoku has been solved. The Sudoku is solved when
             # there are no more cells missing values.
             if len(temp_values) == 0:
@@ -160,8 +161,17 @@ def check_solved(sudoku):
     return True
 
 def main():
-    sudoku = get_sudoku()
-    """ sudoku = np.array([[0, 1, 0, 0, 0, 9, 0, 3, 0], 
+    sudoku = get_sudoku('https://sudoku.com.au/tough.aspx')
+    """sudoku = np.array([[0, 2, 6, 0, 0, 0, 3, 7, 8], 
+                        [0, 5, 8, 6, 3, 7, 4, 0, 0],
+                        [0, 4, 7, 0, 0, 0, 5, 6, 1],
+                        [0, 0, 0, 7, 2, 0, 9, 0, 0],
+                        [0, 0, 0, 3, 0, 8, 2, 5, 0],
+                        [8, 0, 2, 0, 0, 0, 0, 1, 0],
+                        [4, 6, 9, 5, 0, 1, 0, 0, 0],
+                        [0, 0, 1, 9, 0, 0, 7, 4, 0],
+                        [0, 3, 0, 0, 4, 0, 0, 9, 0]])"""
+    """sudoku = np.array([[0, 1, 0, 0, 0, 9, 0, 3, 0], 
                         [6, 0, 0, 3, 0, 0, 8, 1, 2],
                         [0, 0, 0, 1, 0, 8, 7, 0, 0],
                         [7, 2, 0, 4, 8, 0, 0, 9, 0],
@@ -169,8 +179,8 @@ def main():
                         [0, 5, 0, 0, 1, 6, 0, 7, 3],
                         [0, 0, 3, 7, 0, 5, 0, 0, 0],
                         [2, 4, 7, 0, 0, 1, 0, 0, 8],
-                        [0, 9, 0, 8, 0, 0, 0, 4, 0]]) """
-    """ sudoku = np.array([[6, 5, 0, 0, 7, 9, 3, 0, 0], 
+                        [0, 9, 0, 8, 0, 0, 0, 4, 0]])"""
+    """sudoku = np.array([[6, 5, 0, 0, 7, 9, 3, 0, 0], 
                         [0, 0, 2, 0, 0, 0, 0, 0, 6],
                         [0, 0, 9, 0, 0, 5, 0, 0, 0],
                         [0, 0, 0, 0, 2, 0, 0, 8, 0],
@@ -178,14 +188,17 @@ def main():
                         [5, 3, 0, 0, 0, 8, 0, 0, 4],
                         [0, 0, 0, 1, 0, 0, 7, 0, 0],
                         [0, 0, 6, 0, 0, 0, 0, 0, 0],
-                        [4, 8, 0, 0, 0, 2, 0, 0, 3]]) """
-    print(sudoku)
-    print(validate_sudoku(sudoku))
-    values = possible_values(sudoku) # Generate dictionary of possible values for each cell.
+                        [4, 8, 0, 0, 0, 2, 0, 0, 3]])"""
+    print(f'Input: \n{sudoku}')
+    print(f'Valid: {validate_sudoku(sudoku)}')
+    start = time.time()
+    values = init_possible_values(sudoku) # Generate dictionary of possible values for each cell.
+    end = time.time()
+    print(f'Time Elapsed: {end - start}')
     solution, solved = solve_sudoku(sudoku,values)
-    print(solved)
-    print(solution)
-    print(check_solved(solution))
+    print(f'Solved: {solved}')
+    print(f'Solution: \n{solution}')
+    print(f'Valid Solution: {check_solved(solution)}')
 
 if __name__ == '__main__':
     main()
