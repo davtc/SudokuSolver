@@ -3,7 +3,7 @@ import numpy as np
 
 import sys
 
-sys.path.append('../sudokusolver')
+sys.path.append('../sudokusolver/app')
 
 import sudokusolver as ss
 
@@ -106,3 +106,6 @@ def test_solve_sudoku(input_sudoku, solved_sudoku):
     values = ss.init_possible_values(input_sudoku[1])
     solution, values = ss.solve_sudoku(input_sudoku[1], values)
     assert (solution == solved_sudoku[0]).all()
+
+def test_check_solved(solved_sudoku):
+    assert ss.check_solved(solved_sudoku[0]) == True
