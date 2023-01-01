@@ -1,4 +1,6 @@
 /venv
 /screenshot.png
 /processed.png
-/images
+/app/images
+/frontend/node_modules
+/app/__pycache__

@@ -11,8 +11,8 @@ def split_row(sudoku, row):
 def split_col(sudoku, col):
     return sudoku[:, col]
 
-# Return a 9x9 square of the Sudoku at a specified index.
-def split_square(sudoku, index):  
+# Return a 9x9 box of the Sudoku at a specified index.
+def split_box(sudoku, index):  
     start = index%3*3 
     if index < 3:
         return sudoku[0:3, start:(start+3)]
@@ -21,27 +21,27 @@ def split_square(sudoku, index):
     else:
         return sudoku[6:, start:(start+3)]
 
-# Return the a set of unique digits along a group of row/column/square of cells.
+# Return the a set of unique digits along a group of row/column/box of cells.
 def get_unique(cells):
     unique = set(cells.flatten())
     if 0 in unique:
         unique.remove(0)
     return unique
 
-# Return the number of digits along a group of row/column/square of cells.
+# Return the number of digits along a group of row/column/box of cells.
 def count_numbers(cells):
     number = np.nonzero(cells)[0].flatten()
     return len(number)
 
 # Validate that the input Sudoku does not have repeated numbers in
-#  rows/columns/squares.
+#  rows/columns/box.
 def validate_sudoku(sudoku):
     for i in range(9):
         if len(get_unique(split_row(sudoku, i))) != count_numbers(split_row(sudoku, i)):
             return False
         if len(get_unique(split_col(sudoku, i))) != count_numbers(split_col(sudoku, i)):
             return False
-        if len(get_unique(split_square(sudoku, i))) != count_numbers(split_square(sudoku, i)):
+        if len(get_unique(split_box(sudoku, i))) != count_numbers(split_box(sudoku, i)):
             return False
 
     return True
@@ -51,7 +51,7 @@ def get_possible_values(sudoku, row, col):
     unique_row = get_unique(split_row(sudoku, row))
     unique_col = get_unique(split_col(sudoku, col))
     index = (row // 3) * 3 + (col // 3)
-    unique_square = get_unique(split_square(sudoku, index))
+    unique_square = get_unique(split_box(sudoku, index))
 
     return set(range(1, 10)) - unique_row - unique_col - unique_square
 
@@ -67,7 +67,7 @@ def init_possible_values(sudoku):
 
     return dict(sorted(values.items(), key=lambda x: len(x[1])))
 
-# Remove a certain value from every cell in a specified row/column/square.
+# Remove a certain value from every cell in a specified row/column/box.
 def remove_value(values, digit, row, col):
     index = (row // 3) * 3 + (col // 3)
 
@@ -101,7 +101,7 @@ def scan_sudoku(sudoku, values):
         for cell, nums in values.copy().items():
             if len(nums) == 1:
                 # Add the number to the Sudoku and remove it from the set of 
-                # possible values of cells along its row/column/square.
+                # possible values of cells along its row/column/box.
                 digit = nums.pop()
                 # Add the 
                 sudoku[cell] = digit
@@ -155,7 +155,7 @@ def check_solved(sudoku):
             return False
         if np.sum(split_col(sudoku, i)) != 45:
             return False
-        if np.sum(split_square(sudoku, i)) != 45:
+        if np.sum(split_box(sudoku, i)) != 45:
             return False
 
     return True

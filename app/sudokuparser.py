@@ -29,12 +29,12 @@ def get_sudoku_image(url):
                                  element.parentNode.removeChild(element);
                                  """, tip)
         image = driver.find_element(By.CLASS_NAME, 'game').screenshot_as_png
-        with open('images/screenshot.png', 'wb') as f:
+        with open('app/images/screenshot.png', 'wb') as f:
             f.write(image)
     else:
         # Increase the window size in case the Sudoku grid is too large to be captured in the screenshot
         driver.set_window_size(WINDOW_LENGTH, WINDOW_LENGTH)
-        driver.save_screenshot('images/screenshot.png')
+        driver.save_screenshot('app/images/screenshot.png')
 
     driver.close()
 
@@ -103,7 +103,7 @@ def split_sudoku(image):
                 else:
                     # Join the images of the prefilled cells in a row
                     prefill_image = cv2.hconcat([prefill_image, cell])
-    cv2.imwrite('images/digits.png', prefill_image)
+    cv2.imwrite('app/images/digits.png', prefill_image)
 
     return prefill_locations, prefill_image
 
@@ -119,9 +119,9 @@ def parse_sudoku(reader, prefill_locations, prefill_image):
 
 # Function to process the Sudoku image so that it can be parsed into an OCR model and have the digits be recognized and input into an array.
 def process_sudoku_image():
-    threshold_image, corners = find_sudoku_corners('images/screenshot.png')
+    threshold_image, corners = find_sudoku_corners('app/images/screenshot.png')
     crop_image = crop_sudoku_image(threshold_image, corners)
-    cv2.imwrite('images/processed.png', crop_image)
+    cv2.imwrite('app/images/processed.png', crop_image)
     prefill_locations, prefill_image = split_sudoku(crop_image)
     reader = easyocr.Reader(['en'])
     sudoku = parse_sudoku(reader, prefill_locations, prefill_image)

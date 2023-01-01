@@ -1,0 +1,8 @@
+.cell {
+    font-size: 1em;
+    border: 1px solid black;
+}
+
+.start {
+    pointer-events: disabled;
+}

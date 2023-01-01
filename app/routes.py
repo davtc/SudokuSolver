@@ -1,7 +1,7 @@
 from app import app
 from flask import request, jsonify
 
-from sudokusolver import validate_sudoku, init_possible_values, solve_sudoku, check_solved
+from app.sudokusolver import validate_sudoku, init_possible_values, solve_sudoku, check_solved
 
 @app.route('/validate', methods = ['POST'])
 def validate():
