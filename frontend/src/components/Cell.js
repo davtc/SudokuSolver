@@ -1,23 +1,23 @@
-import './Cell.css';
-import { useState, useEffect } from 'react';
+import './Game.css';
+import { useState } from 'react';
 
 function Cell(props) {
-    const { num, setNum } = useState(0)
-    let className = 'cell'
+    const { num, setNum } = useState(props.value);
+    let className = 'cell';
 
     if (props.isStart) {
-        className += ' start'
+        className += ' starting';
     }
     
     const onChange = (e) => {
         let value = e.target.value
         if (value.length == 0) {
-            setNum(0)
+            setNum(0);
         }
         if (value.length > 1) {
-            value = value.slice(0, 1)
+            value = value.slice(0, 1);
         }
-        setNum(value)
+        setNum(value);
     }
 
     return (
@@ -30,5 +30,5 @@ function Cell(props) {
             value={num == 0 ? '' : num}
         >
         </input>
-    )
-} export default Cell
+    );
+} export default Cell;

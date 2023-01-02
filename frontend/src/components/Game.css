@@ -1,0 +1,20 @@
+.game {
+    display: grid;
+    width: 900px;
+    height: 900px;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+}
+
+.box {
+    border: 2px solid black;
+}
+
+.cell {
+    font-size: 1em;
+    border: 1px solid black;
+}
+
+.starting {
+    pointer-events: disabled;
+}
