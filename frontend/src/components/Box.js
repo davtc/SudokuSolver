@@ -8,6 +8,7 @@ function Box(props) {
             return(
                 <Cell
                     key={`${boxKey}-${index}`}
+                    cellKey={`${boxKey}-${index}`}
                     value={value}
                     isStart={props.isStart}
                 >

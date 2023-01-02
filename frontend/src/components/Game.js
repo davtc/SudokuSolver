@@ -6,7 +6,8 @@ function Game(props) {
         return grid.map((box, index) => {
             return(
                 <Box
-                    boxKey={`${box_key}-${index}`}
+                    key={`${index}`}
+                    boxKey={`${index}`}
                     box={box}
                     isStart={props.isStart}
                 >

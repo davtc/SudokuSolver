@@ -1,13 +1,14 @@
 import './App.css';
-import Game from './Game.js'
+import Game from './components/Game.js'
 
 function App() {
+  const sudoku = new Array(9).fill(new Array(9).fill(0));
   return (
     <div className="App">
-      <header className="App-header">
+      <header>
         <h1>Load and Solve Sudoku</h1>
-        <Game></Game>
       </header>
+      <Game sudoku={sudoku}></Game>
     </div>
   );
 }
