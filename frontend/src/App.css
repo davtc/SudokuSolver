@@ -1,38 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
 .App {
+  font-family: 'Open Sans', sans-serif;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.heading {
+  background-color: #0099ff;
+  color: white;
+  width: 100%;
+  height: 30%;
+  padding: 20px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.title {
+  text-align: left;
+  margin-left: 120px;
+  margin-bottom: 0px;
+  font-size: 3em;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.app-container {
+  display: flex;
+  flex-direction: row;
+  margin: 0px 100px;
+}
+
+.game-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-content: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  margin: 30px 50px;
+  padding: 10px;
+  width: 548px;
 }

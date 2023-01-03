@@ -10,7 +10,6 @@ function Box(props) {
                     key={`${boxKey}-${index}`}
                     cellKey={`${boxKey}-${index}`}
                     value={value}
-                    isStart={props.isStart}
                 >
                 </Cell>
             );

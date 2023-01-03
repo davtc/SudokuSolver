@@ -9,7 +9,6 @@ function Game(props) {
                     key={`${index}`}
                     boxKey={`${index}`}
                     box={box}
-                    isStart={props.isStart}
                 >
                 </Box>
             );
