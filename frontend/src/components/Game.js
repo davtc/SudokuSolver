@@ -9,8 +9,7 @@ function Game(props) {
                     key={`${index}`}
                     boxKey={`${index}`}
                     box={box}
-                >
-                </Box>
+                />
             );
         })}
     return(

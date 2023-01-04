@@ -15,11 +15,11 @@ function App() {
       </header>
       <div className='content-container'>
         <div className='game-container'>
-          <Game sudoku={sudoku}></Game>
-          <Controls></Controls>
+          <Game sudoku={sudoku} />
+          <Controls />
         </div>
         <div className='tab-container'>
-          <Tab></Tab>
+          <Tab />
         </div>
       </div>
     </div>

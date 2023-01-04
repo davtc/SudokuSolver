@@ -24,6 +24,7 @@
     height: 56px;
     caret-color: transparent;    
     outline-color: #4dd2ff;  
+    cursor: pointer;
 }
 
 .starting {

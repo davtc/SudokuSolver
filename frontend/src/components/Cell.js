@@ -48,7 +48,7 @@ function Cell(props) {
             onBlur={onBlur}
             value={num == 0 ? '' : num}
             disabled={isDisabled}
-        >
-        </input>
+        />
+
     );
 } export default Cell;
