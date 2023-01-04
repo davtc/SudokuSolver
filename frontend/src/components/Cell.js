@@ -1,5 +1,5 @@
 import './Game.css';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 function Cell(props) {
     const [num, setNum] = useState(props.value);

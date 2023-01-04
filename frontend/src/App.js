@@ -1,7 +1,7 @@
 import './App.css';
 import Game from './components/Game.js'
 import Controls from './components/Controls.js'
-import Loader from './components/Loader.js'
+import Tab from './components/Tab'
 
 function App() {
   const sudoku = new Array(9).fill().map(() => {return new Array(9).fill(0)});
@@ -13,13 +13,13 @@ function App() {
       <header className='heading'>
         <h1 className='title'>Load and Solve Sudoku</h1>
       </header>
-      <div className='app-container'>
+      <div className='content-container'>
         <div className='game-container'>
           <Game sudoku={sudoku}></Game>
           <Controls></Controls>
         </div>
-        <div>
-          <Loader></Loader>
+        <div className='tab-container'>
+          <Tab></Tab>
         </div>
       </div>
     </div>
