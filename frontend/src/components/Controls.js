@@ -1,20 +1,23 @@
 import './Controls.css';
 import { useState } from 'react';
+import ButtonControl from './ButtonControl';
 
 function Controls(props) {
-
     return(
         <div className='control-panel'>
             <div>
-                <button>Undo</button>
-                <button>Redo</button>
-                <button>Pencil Marks</button>
-                <button>Reset</button>
-                <button>Solve</button>
+                <ButtonControl name='Start' handler={props.handleStart} />
+                <ButtonControl name='Reset All' />
+                <ButtonControl name='Save' />
+                <ButtonControl name='Load' />
             </div>
             <div>
-                <button>Save</button>
-                <button>Load</button>
+                <ButtonControl name='Undo' />
+                <ButtonControl name='Redo' />
+                <ButtonControl name='Pencil' />
+                <ButtonControl name='Reset Puzzle' />
+                <ButtonControl name='Check' />
+                <ButtonControl name='Solve' />
             </div>
         </div>
     );

@@ -1,6 +1,7 @@
 import './Tab.css'
 import URLTab from './URLTab'
 import ImageTab from './ImageTab'
+import ButtonControl from './ButtonControl';
 import { useState } from 'react';
 
 function Tab(props) {
@@ -23,7 +24,7 @@ function Tab(props) {
             </div>
             <div className='tab-content'>
                 <img className='preview' title="Preview"></img>
-                {previewLoad && <button>Load</button>}
+                {previewLoad && <ButtonControl name='Load' />}
                 {active == 'urlTab' ? <URLTab /> : <ImageTab />}
             </div>
         </div>

@@ -26,6 +26,8 @@ function Cell(props) {
             value = value.slice(-1);
         }
         setNum(value);
+        const index = parseInt(props.cellKey.split('-')[1]);
+        props.update(parseInt(value), index);
     }
 
     const onFocus = () => {

@@ -13,5 +13,11 @@ button {
     border: 1px solid #0099ff;
     border-radius: 10px;
     background-color: white;
+    user-select: none;
+}
+
+.highlight {
+    background-color: #66c2ff;
+    color: white;
 }
 

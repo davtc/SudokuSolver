@@ -1,4 +1,5 @@
 import './Tab.css'
+import ButtonControl from './ButtonControl';
 
 function URLTab() {
     return (
@@ -8,7 +9,7 @@ function URLTab() {
                 placeholder='https://sudoku.com' 
                 pattern="https://.*" size="30"
                 required />
-            <button>Submit</button>
+            < ButtonControl name='Submit' />
         </div>
     );
 } export default URLTab
