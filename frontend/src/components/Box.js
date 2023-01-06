@@ -4,13 +4,14 @@ import { useState } from 'react';
 
 function Box(props) {
     let box = props.box;
-    const updateCellValue = (n, i) => {
+
+    const getCellValue = (n, i) => {
         box[i] = n;
         const key = parseInt(props.boxKey);
-        props.update(box, key)
+        props.getter(box, key)
     }
 
-    const setBox = (box) => {
+    const displayBox = (box) => {
         const boxKey = props.boxKey;
         return box.map((value, index) => {
             return(
@@ -18,7 +19,7 @@ function Box(props) {
                     key={`${boxKey}-${index}`}
                     cellKey={`${boxKey}-${index}`}
                     value={value}
-                    update={updateCellValue}
+                    getter={getCellValue}
                 >
                 </Cell>
             );
@@ -26,7 +27,7 @@ function Box(props) {
     
     return(
         <div className='box'>
-            {setBox(props.box)}
+            {displayBox(props.box)}
         </div>
     );
 } export default Box;

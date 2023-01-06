@@ -1,56 +1,63 @@
 import './Game.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function Cell(props) {
+    const [startNum, setStartNum] = useState(props.value);
     const [num, setNum] = useState(props.value);
     const [isDisabled, setIsDisabled] = useState(false);
-    const checkStart = (value) => {
-        if (value != 0) {
+
+    const [className, setClassName] = useState(() => {
+        if (startNum != 0) {
             setIsDisabled(true);
             return 'cell starting';
         }
         else {
             return 'cell';
         }
-    };
-    const [className, setClassName] = useState(() => {return checkStart(num)});
-    
+    });
+
+    useEffect(() => {
+        if (num != props.value) {
+            setNum(props.value);
+            setStartNum(props.value);
+            setIsDisabled(false);
+            setClassName('cell');
+        }
+    })
+
     const onChange = (e) => {
         let value = e.target.value
-        // Default value is 0.
-        if (value.length == 0) {
-            value = 0;
-        }
         // If more than one didit is entered, take the last digit entered.
-        else if (value.length > 1) {
+        if (value >= 1) {
             value = value.slice(-1);
+            setNum(value);
+            const index = parseInt(props.cellKey.split('-')[1]);
+            props.getter(parseInt(value), index);
         }
-        setNum(value);
-        const index = parseInt(props.cellKey.split('-')[1]);
-        props.update(parseInt(value), index);
     }
 
     const onFocus = () => {
-        setClassName(className => className + ' focused');
+        setClassName('cell focused');
     }
 
     const onBlur = () => {
-        setClassName(className => className.split(' focused')[0]);
+        setClassName('cell');
     }
 
     return (
-        <input className={className}
-            key={props.cellKey}
-            type='number'
-            min='1'
-            max='9'
-            maxLength='1'
-            onChange={onChange}
-            onFocus={onFocus}
-            onBlur={onBlur}
-            value={num == 0 ? '' : num}
-            disabled={isDisabled}
-        />
-
+        <div>
+            <input className={className}
+                    key={props.cellKey}
+                    type='number'
+                    min='1'
+                    max='9'
+                    maxLength='1'
+                    onChange={onChange}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
+                    value={num == 0 ? '' : num}
+                    disabled={isDisabled}
+                />
+        </div>
     );
 } export default Cell;

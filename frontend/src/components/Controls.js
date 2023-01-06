@@ -6,8 +6,8 @@ function Controls(props) {
     return(
         <div className='control-panel'>
             <div>
+                <ButtonControl name='Blank' handler={props.handleBlank}/>
                 <ButtonControl name='Start' handler={props.handleStart} />
-                <ButtonControl name='Reset All' />
                 <ButtonControl name='Save' />
                 <ButtonControl name='Load' />
             </div>

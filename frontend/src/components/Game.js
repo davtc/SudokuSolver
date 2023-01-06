@@ -5,40 +5,50 @@ import { useState } from 'react';
 
 function Game(props) {
     const startingSudoku = new Array(9).fill().map(() => {return new Array(9).fill(0)})
+    startingSudoku[5][3] = 3
     const [puzzle, setPuzzle] = useState(startingSudoku);
-    let sudoku = startingSudoku;
 
-    const updateSudokuValues = (box, key) => {
-        sudoku[key] = box;
-        console.log(sudoku)
+    const getSudokuValues = (box, key) => {
+        setPuzzle(puzzle => {
+            const newPuzzle = puzzle.map((old, index) => {
+                if (index == key) {
+                    return box
+                } else {
+                    return old
+                }
+            })
+            return newPuzzle
+        })
     }
 
-    const setGrid = (grid) => {
+    const displayGrid = (grid) => {
         return grid.map((box, index) => {
             return(
                 <Box
                     key={`${index}`}
                     boxKey={`${index}`}
                     box={box}
-                    update={updateSudokuValues}
+                    getter={getSudokuValues}
                 />
             );
     })};
-    
-    const getBoxValues = () => {
 
+    const handleBlank = () => {
+        const blank = new Array(9).fill().map(() => {return new Array(9).fill(0)});
+        setPuzzle(blank)
     }
+    
     const handleStart = () => {
-        setPuzzle(sudoku);
-        console.log(puzzle)
+        
     };
 
     return(
         <div className='game-container'>
             <div className='game'>
-                {setGrid(puzzle)}
+                {displayGrid(puzzle)}
             </div>
             <Controls
+            handleBlank={handleBlank}
             handleStart={handleStart}
             />
         </div>
