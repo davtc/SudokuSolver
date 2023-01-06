@@ -1,13 +1,13 @@
 import './Controls.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ButtonControl from './ButtonControl';
 
 function Controls(props) {
     return(
         <div className='control-panel'>
             <div>
-                <ButtonControl name='Blank' handler={props.handleBlank}/>
-                <ButtonControl name='Start' handler={props.handleStart} />
+                {!props.new && <ButtonControl name='Blank' handler={props.handleBlank}/>}
+                {props.new && <ButtonControl name='Start' handler={props.handleStart} />}
                 <ButtonControl name='Save' />
                 <ButtonControl name='Load' />
             </div>
@@ -15,7 +15,7 @@ function Controls(props) {
                 <ButtonControl name='Undo' />
                 <ButtonControl name='Redo' />
                 <ButtonControl name='Pencil' />
-                <ButtonControl name='Reset Puzzle' />
+                <ButtonControl name='Reset Puzzle' handler={props.handleReset} />
                 <ButtonControl name='Check' />
                 <ButtonControl name='Solve' />
             </div>

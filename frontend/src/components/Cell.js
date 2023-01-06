@@ -7,7 +7,7 @@ function Cell(props) {
     const [isDisabled, setIsDisabled] = useState(false);
 
     const [className, setClassName] = useState(() => {
-        if (startNum != 0) {
+        if (props.puzzle) {
             setIsDisabled(true);
             return 'cell starting';
         }
@@ -17,13 +17,17 @@ function Cell(props) {
     });
 
     useEffect(() => {
+        if (props.puzzle) {
+            setIsDisabled(true);
+            setClassName('cell starting');
+        }
         if (num != props.value) {
             setNum(props.value);
             setStartNum(props.value);
             setIsDisabled(false);
             setClassName('cell');
         }
-    })
+    });
 
     const onChange = (e) => {
         let value = e.target.value

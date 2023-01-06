@@ -5,21 +5,22 @@ import { useState } from 'react';
 function Box(props) {
     let box = props.box;
 
-    const getCellValue = (n, i) => {
+    const getBoxValues = (n, i) => {
         box[i] = n;
-        const key = parseInt(props.boxKey);
-        props.getter(box, key)
+        const boxKey = parseInt(props.boxKey);
+        props.getter(box, boxKey)
     }
 
     const displayBox = (box) => {
         const boxKey = props.boxKey;
-        return box.map((value, index) => {
+        return box.map((value, cellIndex) => {
             return(
                 <Cell
-                    key={`${boxKey}-${index}`}
-                    cellKey={`${boxKey}-${index}`}
+                    key={`${boxKey}-${cellIndex}`}
+                    cellKey={`${boxKey}-${cellIndex}`}
                     value={value}
-                    getter={getCellValue}
+                    puzzle={props.puzzleBox[cellIndex]}
+                    getter={getBoxValues}
                 >
                 </Cell>
             );

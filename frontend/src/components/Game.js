@@ -4,52 +4,81 @@ import Controls from './Controls'
 import { useState } from 'react';
 
 function Game(props) {
-    const startingSudoku = new Array(9).fill().map(() => {return new Array(9).fill(0)})
-    startingSudoku[5][3] = 3
-    const [puzzle, setPuzzle] = useState(startingSudoku);
+    const blank = new Array(9).fill().map(() => {return new Array(9).fill(0)});
+    const [sudoku, setSudoku] = useState(blank);
+    const blankPuzzle = new Array(9).fill().map(() => {return new Array(9).fill(false)});
+    const [puzzle, setPuzzle] = useState(blankPuzzle);
+    const [resetPuzzle, setResetPuzzle] = useState(sudoku);
+    const [newPuzzle, setNewPuzzle] = useState(true);
 
-    const getSudokuValues = (box, key) => {
-        setPuzzle(puzzle => {
-            const newPuzzle = puzzle.map((old, index) => {
-                if (index == key) {
-                    return box
+    const getGridValues = (newBox, boxKey) => {
+        setSudoku(sudoku => {
+            return sudoku.map((prevBox, index) => {
+                if (index == boxKey) {
+                    return newBox;
                 } else {
-                    return old
+                    return prevBox;
                 }
-            })
-            return newPuzzle
-        })
-    }
+            });
+        });
+    };
+
+    const setPuzzleStart = () => {
+        setPuzzle(() => {
+            return sudoku.map((box) => {
+                return box.map((cell) => {
+                    if (cell == 0) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                })
+            });
+        });
+    };
 
     const displayGrid = (grid) => {
-        return grid.map((box, index) => {
+        return grid.map((box, boxIndex) => {
             return(
                 <Box
-                    key={`${index}`}
-                    boxKey={`${index}`}
+                    key={`${boxIndex}`}
+                    boxKey={`${boxIndex}`}
                     box={box}
-                    getter={getSudokuValues}
+                    puzzleBox={puzzle[boxIndex]}
+                    getter={getGridValues}
                 />
             );
     })};
 
     const handleBlank = () => {
-        const blank = new Array(9).fill().map(() => {return new Array(9).fill(0)});
-        setPuzzle(blank)
+        setSudoku(blank);
+        setPuzzle(blankPuzzle);
+        setNewPuzzle(newPuzzle => !newPuzzle);
+        console.log(newPuzzle)
     }
     
     const handleStart = () => {
-        
+        if (!sudoku.every(box => box.every(cell => cell === 0))) {
+            setPuzzleStart();
+            setNewPuzzle(newPuzzle => !newPuzzle);
+            setResetPuzzle(sudoku);
+        }
     };
+
+    const handleReset = () => {
+        setPuzzle(resetPuzzle);
+    }
 
     return(
         <div className='game-container'>
             <div className='game'>
-                {displayGrid(puzzle)}
+                {displayGrid(sudoku)}
             </div>
             <Controls
-            handleBlank={handleBlank}
-            handleStart={handleStart}
+                new={newPuzzle}
+                handleBlank={handleBlank}
+                handleStart={handleStart}
+                handleReset={handleReset}
             />
         </div>
     );
