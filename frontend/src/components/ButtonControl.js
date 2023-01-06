@@ -9,8 +9,11 @@ function ButtonControl(props) {
         await new Promise(resolve => setTimeout(resolve, 200));
         setClassName('');
     };
-
+    const handler = () => {
+        props.handler();
+        highlightBtn()
+    }
     return (
-        <button className={className} onClick={props.handler}>{props.name}</button>
+        <button className={className} onClick={handler}>{props.name}</button>
     );
 } export default ButtonControl;
