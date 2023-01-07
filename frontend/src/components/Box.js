@@ -19,7 +19,7 @@ function Box(props) {
                     key={`${boxKey}-${cellIndex}`}
                     cellKey={`${boxKey}-${cellIndex}`}
                     value={value}
-                    puzzle={props.puzzleBox[cellIndex]}
+                    sudoku={props.sudokuBox[cellIndex]}
                     getter={getBoxValues}
                 >
                 </Cell>

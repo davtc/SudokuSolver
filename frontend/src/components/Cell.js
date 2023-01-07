@@ -7,7 +7,7 @@ function Cell(props) {
     const [isDisabled, setIsDisabled] = useState(false);
 
     const [className, setClassName] = useState(() => {
-        if (props.puzzle) {
+        if (props.sudoku) {
             setIsDisabled(true);
             return 'cell starting';
         }
@@ -17,7 +17,7 @@ function Cell(props) {
     });
 
     useEffect(() => {
-        if (props.puzzle) {
+        if (props.sudoku) {
             setIsDisabled(true);
             setClassName('cell starting');
         }
