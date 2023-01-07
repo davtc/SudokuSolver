@@ -9,7 +9,7 @@ function Game(props) {
     const blankPuzzle = new Array(9).fill().map(() => {return new Array(9).fill(false)});
     const [puzzle, setPuzzle] = useState(blankPuzzle);
     const [resetPuzzle, setResetPuzzle] = useState(sudoku);
-    const [newPuzzle, setNewPuzzle] = useState(true);
+    const [newGame, setNewGame] = useState(true);
 
     const getGridValues = (newBox, boxKey) => {
         setSudoku(sudoku => {
@@ -53,20 +53,23 @@ function Game(props) {
     const handleBlank = () => {
         setSudoku(blank);
         setPuzzle(blankPuzzle);
-        setNewPuzzle(newPuzzle => !newPuzzle);
-        console.log(newPuzzle)
+        setNewGame(newGame => !newGame);
     }
     
     const handleStart = () => {
         if (!sudoku.every(box => box.every(cell => cell === 0))) {
             setPuzzleStart();
-            setNewPuzzle(newPuzzle => !newPuzzle);
-            setResetPuzzle(sudoku);
+            setNewGame(newGame => !newGame);
+            setResetPuzzle(() => {
+                let reset = JSON.stringify(sudoku);
+                return JSON.parse(reset);
+            });
         }
     };
 
     const handleReset = () => {
-        setPuzzle(resetPuzzle);
+        console.log(resetPuzzle)
+        setSudoku(resetPuzzle);
     }
 
     return(
@@ -75,7 +78,7 @@ function Game(props) {
                 {displayGrid(sudoku)}
             </div>
             <Controls
-                new={newPuzzle}
+                new={newGame}
                 handleBlank={handleBlank}
                 handleStart={handleStart}
                 handleReset={handleReset}
