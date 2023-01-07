@@ -10,18 +10,27 @@ function Game(props) {
     const [sudoku, setSudoku] = useState(blankSudoku);
     const [resetSudoku, setResetSudoku] = useState(blank);
     const [newGame, setNewGame] = useState(true);
-    const [gridHistory, setGridHistory] = useState(new Array())
+    const [gridHistory, setGridHistory] = useState([]);
 
     const getGridValues = (newBox, boxKey) => {
         setGrid(grid => {
-            return grid.map((prevBox, index) => {
-                if (index == boxKey) {
+            return grid.map((prevBox, boxIndex) => {
+                if (boxIndex == boxKey) {
                     return newBox;
                 } else {
                     return prevBox;
                 }
             });
         });
+    };
+
+    const addGridHistory = (cellIndex, boxIndex, oldValue, newValue) => {
+        setGridHistory([...gridHistory, { 
+            cellIndex: cellIndex,
+            boxIndex: boxIndex,
+            oldValue: oldValue,
+            newValue: newValue
+        }]);
     };
 
     const setStartingSudoku = () => {
@@ -47,6 +56,7 @@ function Game(props) {
                     box={box}
                     sudokuBox={sudoku[boxIndex]}
                     getter={getGridValues}
+                    history={addGridHistory}
                 />
             );
     })};
@@ -55,7 +65,8 @@ function Game(props) {
         setGrid(blank);
         setSudoku(blankSudoku);
         setNewGame(newGame => !newGame);
-    }
+        setGridHistory([]);
+    };
     
     const handleStart = () => {
         if (!grid.every(box => box.every(cell => cell === 0))) {
@@ -68,7 +79,6 @@ function Game(props) {
                     })
                 })
             });
-            console.log(resetSudoku)
         }
     };
 
@@ -76,12 +86,16 @@ function Game(props) {
         setGrid(() => {
             return resetSudoku.map(box => {
                 return box.map(cell => {
-                    return cell
+                    return cell;
                 })
             })
         });
-    }
-
+    };
+    
+    const handleUndo = () => {
+        console.log(gridHistory);
+    };
+    
     return(
         <div className='game-container'>
             <div className='game'>
@@ -92,6 +106,7 @@ function Game(props) {
                 handleBlank={handleBlank}
                 handleStart={handleStart}
                 handleReset={handleReset}
+                handleUndo = {handleUndo}
             />
         </div>
     );

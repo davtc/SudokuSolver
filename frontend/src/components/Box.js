@@ -5,9 +5,10 @@ import { useState } from 'react';
 function Box(props) {
     let box = props.box;
 
-    const getBoxValues = (n, i) => {
-        box[i] = n;
+    const getBoxValues = (newValue, cellIndex) => {
         const boxKey = parseInt(props.boxKey);
+        props.history(cellIndex, boxKey, box[cellIndex], newValue)
+        box[cellIndex] = newValue;
         props.getter(box, boxKey)
     }
 

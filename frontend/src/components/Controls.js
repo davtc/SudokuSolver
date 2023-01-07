@@ -12,7 +12,7 @@ function Controls(props) {
                 <ButtonControl name='Load' />
             </div>
             <div>
-                <ButtonControl name='Undo' />
+                <ButtonControl name='Undo' handler={props.handleUndo}/>
                 <ButtonControl name='Redo' />
                 <ButtonControl name='Pencil' />
                 <ButtonControl name='Reset Puzzle' handler={props.handleReset} />
