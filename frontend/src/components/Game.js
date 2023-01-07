@@ -11,6 +11,9 @@ function Game(props) {
     const [resetSudoku, setResetSudoku] = useState(blank);
     const [newGame, setNewGame] = useState(true);
     const [gridHistory, setGridHistory] = useState([]);
+    let min = -1;
+    const [offsetMin, setOffsetMin] = useState(min);
+    const [offset, setOffset] = useState(min)
 
     const getGridValues = (newBox, boxKey) => {
         setGrid(grid => {
@@ -31,6 +34,7 @@ function Game(props) {
             oldValue: oldValue,
             newValue: newValue
         }]);
+        setOffset(offset => offset + 1)
     };
 
     const setStartingSudoku = () => {
@@ -64,8 +68,11 @@ function Game(props) {
     const handleBlank = () => {
         setGrid(blank);
         setSudoku(blankSudoku);
+        setResetSudoku(blank);
         setNewGame(newGame => !newGame);
         setGridHistory([]);
+        setOffsetMin(0);
+        setOffset(0);
     };
     
     const handleStart = () => {
@@ -79,6 +86,17 @@ function Game(props) {
                     })
                 })
             });
+            min = grid.reduce((totalCount, box) => {
+                return totalCount += box.reduce((count, value) => {
+                    if (value > 0) {
+                        return count += 1;
+                    } else {
+                        return count;
+                    }
+                }, 0);
+            }, 0) - 1;
+            setOffsetMin(min);
+            setOffset(min);
         }
     };
 
@@ -90,10 +108,35 @@ function Game(props) {
                 })
             })
         });
+        setGridHistory(gridHistory => gridHistory.slice(0, offsetMin))
+        setOffset(min);
     };
     
+    const updateGrid = (cellIndex, boxIndex, value) => {
+        setGrid(grid => {
+            return grid.map((box, b) => {
+                if (b == boxIndex) {
+                    return box.map((cell, c) => {
+                        if (c == cellIndex) {
+                            return value;
+                        } else {
+                            return cell;
+                        }
+                    });
+                } else {
+                    return box;
+                }
+            })
+        })
+    }
+
     const handleUndo = () => {
-        console.log(gridHistory);
+        if (offset > offsetMin) {
+            setOffset(offset => offset - 1);
+            const { cellIndex, boxIndex, oldValue, newValue } = gridHistory[offset];
+            console.log(gridHistory[offset])
+            updateGrid(cellIndex, boxIndex, oldValue);
+        }
     };
     
     return(
