@@ -127,8 +127,6 @@ function Game(props) {
     let n = 0;
 
     const handleUndo = () => {
-        n++;
-        console.log(n)
         if (offset > offsetMin) {
             setOffset(Math.max(offset - 1, offsetMin + 1));
             const { boxIndex, cellIndex, oldValue } = gridHistory[offset];
@@ -137,8 +135,6 @@ function Game(props) {
     };
 
     const handleRedo = () => {
-        n++;
-        console.log(n)
         setOffset(Math.min(offset + 1, gridHistory.length - 1));
         const { boxIndex, cellIndex, newValue } = gridHistory[offset];
         setGrid(grid => updateArray(grid, boxIndex, cellIndex, newValue, 2));
