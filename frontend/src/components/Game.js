@@ -1,19 +1,21 @@
 import './Game.css'
 import Box from './Box.js'
 import Controls from './Controls'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function Game(props) {
-    const blank = new Array(9).fill().map(() => {return new Array(9).fill(0)});
-    const [grid, setGrid] = useState(blank);
+    const [grid, setGrid] = useState(new Array(9).fill().map(() => {return new Array(9).fill(0)}));
     const blankSudoku = new Array(9).fill().map(() => {return new Array(9).fill(false)});
     const [sudoku, setSudoku] = useState(blankSudoku);
-    const [resetSudoku, setResetSudoku] = useState(blank);
+    const [resetSudoku, setResetSudoku] = useState(new Array(9).fill().map(() => {return new Array(9).fill(0)}));
     const [newGame, setNewGame] = useState(true);
     const [gridHistory, setGridHistory] = useState([]);
-    let min = -1;
-    const [offsetMin, setOffsetMin] = useState(min);
-    const [offset, setOffset] = useState(min)
+    const [offsetMin, setOffsetMin] = useState(-1);
+    const [offset, setOffset] = useState(-1)
+
+    const copyValue = (value) => {
+        return value;
+    }
 
     const createCopy = (array, dimension) => {
         return array.map(row => {
@@ -36,31 +38,36 @@ function Game(props) {
 
     const sliceArray = (array, start, end, dimension) => {
         const copy = createCopy(array, dimension);
-        return copy.slice(start, end);
+        return copy.slice(start, end)
     };
 
     const getGridValues = (boxIndex, cellIndex, oldValue, newValue) => {
-        setGrid(grid => updateArray(grid, boxIndex, cellIndex, newValue, 2));
+        setGrid(updateArray(grid, boxIndex, cellIndex, newValue, 2));
         if (offset < gridHistory.length - 1) {
-            setGridHistory(gridHistory => sliceArray(gridHistory, 0, offset + 1, 1))
+            setGridHistory([...sliceArray(gridHistory, 0, offset + 1, 1), {
+                boxIndex: boxIndex,
+                cellIndex: cellIndex,
+                oldValue: oldValue,
+                newValue: newValue
+            }
+            ])
+            setOffset(copyValue(offset) + 1);
+        } else {
+            addGridHistory(boxIndex, cellIndex, oldValue, newValue);
         }
-        addGridHistory(boxIndex, cellIndex, oldValue, newValue);
     };
 
 
 
     const addGridHistory = (boxIndex, cellIndex, oldValue, newValue) => {
-        setGridHistory(gridHistory => {
-            let copy = createCopy(gridHistory, 1);
-            copy.push({ 
+        setGridHistory([...gridHistory, { 
                 boxIndex: boxIndex,
                 cellIndex: cellIndex,
                 oldValue: oldValue,
                 newValue: newValue
-            });
-            return copy;
-        });
-        setOffset(offset => offset + 1)
+            }]
+        );
+        setOffset(copyValue(offset) + 1)
     };
 
     const setStartingSudoku = () => {
@@ -92,46 +99,49 @@ function Game(props) {
     })};
 
     const handleBlank = () => {
-        setGrid(blank);
+        setGrid(new Array(9).fill().map(() => {return new Array(9).fill(0)}));
         setSudoku(blankSudoku);
-        setResetSudoku(blank);
+        setResetSudoku(new Array(9).fill().map(() => {return new Array(9).fill(0)}));
         setNewGame(newGame => !newGame);
         setGridHistory([]);
         setOffsetMin(-1);
         setOffset(-1);
-    };
+    };  
     
     const handleStart = () => {
         if (!grid.every(box => box.every(cell => cell === 0))) {
             setStartingSudoku();
             setNewGame(newGame => !newGame);
             setResetSudoku(createCopy(grid, 2));
-            min = grid.reduce((totalCount, box) => {
-                return totalCount += box.reduce((count, value) => {
-                    if (value > 0) {
-                        return count += 1;
-                    } else {
-                        return count;
-                    }
-                }, 0);
-            }, 0) - 1;
-            setOffsetMin(min);
-            setOffset(min);
+            setOffsetMin(copyValue(gridHistory.length) - 1);
+            setOffset(copyValue(gridHistory.length) - 1);
         }
     };
 
     const handleReset = () => {
         setGrid(createCopy(resetSudoku, 2));
-        setGridHistory(gridHistory => sliceArray(gridHistory, 0, offsetMin, 1));
-        setOffset(min);
+        setGridHistory(sliceArray(gridHistory, 0, offsetMin + 1, 1));
+        setOffset(copyValue(gridHistory.length) - 1);
+        setOffsetMin(copyValue(gridHistory.length) - 1);
     };
+    let n = 0;
 
     const handleUndo = () => {
+        n++;
+        console.log(n)
         if (offset > offsetMin) {
-            setOffset(offset => offset - 1);
+            setOffset(Math.max(offset - 1, offsetMin + 1));
             const { boxIndex, cellIndex, oldValue } = gridHistory[offset];
             setGrid(grid => updateArray(grid, boxIndex, cellIndex, oldValue, 2));
         }
+    };
+
+    const handleRedo = () => {
+        n++;
+        console.log(n)
+        setOffset(Math.min(offset + 1, gridHistory.length - 1));
+        const { boxIndex, cellIndex, newValue } = gridHistory[offset];
+        setGrid(grid => updateArray(grid, boxIndex, cellIndex, newValue, 2));
     };
     
     return(
@@ -145,6 +155,7 @@ function Game(props) {
                 handleStart={handleStart}
                 handleReset={handleReset}
                 handleUndo = {handleUndo}
+                handleRedo = {handleRedo}
             />
         </div>
     );

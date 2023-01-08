@@ -13,7 +13,7 @@ function Controls(props) {
             </div>
             <div>
                 <ButtonControl name='Undo' handler={props.handleUndo}/>
-                <ButtonControl name='Redo' handler={props.handleBlank}/>
+                <ButtonControl name='Redo' handler={props.handleRedo}/>
                 <ButtonControl name='Pencil' handler={props.handleBlank}/>
                 <ButtonControl name='Reset Puzzle' handler={props.handleReset} />
                 <ButtonControl name='Check' handler={props.handleBlank}/>

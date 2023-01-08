@@ -32,7 +32,7 @@ function Cell(props) {
     const onChange = (e) => {
         let value = e.target.value
         // If more than one didit is entered, take the last digit entered.
-        if (value >= 1) {
+        if (value >= 0) {
             value = value.slice(-1);
             setNum(value);
             const index = parseInt(props.cellKey.split('-')[1]);
