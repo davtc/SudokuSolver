@@ -36,7 +36,7 @@ function Cell(props) {
             value = value.slice(-1);
             setNum(value);
             const index = parseInt(props.cellKey.split('-')[1]);
-            props.getter(parseInt(value), index);
+            props.getter(index, parseInt(value));
         }
     }
 

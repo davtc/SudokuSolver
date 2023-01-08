@@ -15,25 +15,51 @@ function Game(props) {
     const [offsetMin, setOffsetMin] = useState(min);
     const [offset, setOffset] = useState(min)
 
-    const getGridValues = (newBox, boxKey) => {
-        setGrid(grid => {
-            return grid.map((prevBox, boxIndex) => {
-                if (boxIndex == boxKey) {
-                    return newBox;
-                } else {
-                    return prevBox;
-                }
-            });
+    const createCopy = (array, dimension) => {
+        return array.map(row => {
+            if (dimension == 1) {
+                return row
+            }
+            if (dimension == 2) {
+                return row.map(col => {
+                    return col;
+                })
+            }
         });
     };
 
-    const addGridHistory = (cellIndex, boxIndex, oldValue, newValue) => {
-        setGridHistory([...gridHistory, { 
-            cellIndex: cellIndex,
-            boxIndex: boxIndex,
-            oldValue: oldValue,
-            newValue: newValue
-        }]);
+    const updateArray = (array, row, col, value, dimension) => {
+        let copy = createCopy(array, dimension);
+        copy[row][col] = value;
+        return copy;
+    };
+
+    const sliceArray = (array, start, end, dimension) => {
+        const copy = createCopy(array, dimension);
+        return copy.slice(start, end);
+    };
+
+    const getGridValues = (boxIndex, cellIndex, oldValue, newValue) => {
+        setGrid(grid => updateArray(grid, boxIndex, cellIndex, newValue, 2));
+        if (offset < gridHistory.length - 1) {
+            setGridHistory(gridHistory => sliceArray(gridHistory, 0, offset + 1, 1))
+        }
+        addGridHistory(boxIndex, cellIndex, oldValue, newValue);
+    };
+
+
+
+    const addGridHistory = (boxIndex, cellIndex, oldValue, newValue) => {
+        setGridHistory(gridHistory => {
+            let copy = createCopy(gridHistory, 1);
+            copy.push({ 
+                boxIndex: boxIndex,
+                cellIndex: cellIndex,
+                oldValue: oldValue,
+                newValue: newValue
+            });
+            return copy;
+        });
         setOffset(offset => offset + 1)
     };
 
@@ -56,7 +82,7 @@ function Game(props) {
             return(
                 <Box
                     key={`${boxIndex}`}
-                    boxKey={`${boxIndex}`}
+                    boxIndex={`${boxIndex}`}
                     box={box}
                     sudokuBox={sudoku[boxIndex]}
                     getter={getGridValues}
@@ -71,21 +97,15 @@ function Game(props) {
         setResetSudoku(blank);
         setNewGame(newGame => !newGame);
         setGridHistory([]);
-        setOffsetMin(0);
-        setOffset(0);
+        setOffsetMin(-1);
+        setOffset(-1);
     };
     
     const handleStart = () => {
         if (!grid.every(box => box.every(cell => cell === 0))) {
             setStartingSudoku();
             setNewGame(newGame => !newGame);
-            setResetSudoku(() => {
-                return grid.map(box => {
-                    return box.map(cell => {
-                        return cell
-                    })
-                })
-            });
+            setResetSudoku(createCopy(grid, 2));
             min = grid.reduce((totalCount, box) => {
                 return totalCount += box.reduce((count, value) => {
                     if (value > 0) {
@@ -101,41 +121,16 @@ function Game(props) {
     };
 
     const handleReset = () => {
-        setGrid(() => {
-            return resetSudoku.map(box => {
-                return box.map(cell => {
-                    return cell;
-                })
-            })
-        });
-        setGridHistory(gridHistory => gridHistory.slice(0, offsetMin))
+        setGrid(createCopy(resetSudoku, 2));
+        setGridHistory(gridHistory => sliceArray(gridHistory, 0, offsetMin, 1));
         setOffset(min);
     };
-    
-    const updateGrid = (cellIndex, boxIndex, value) => {
-        setGrid(grid => {
-            return grid.map((box, b) => {
-                if (b == boxIndex) {
-                    return box.map((cell, c) => {
-                        if (c == cellIndex) {
-                            return value;
-                        } else {
-                            return cell;
-                        }
-                    });
-                } else {
-                    return box;
-                }
-            })
-        })
-    }
 
     const handleUndo = () => {
         if (offset > offsetMin) {
             setOffset(offset => offset - 1);
-            const { cellIndex, boxIndex, oldValue, newValue } = gridHistory[offset];
-            console.log(gridHistory[offset])
-            updateGrid(cellIndex, boxIndex, oldValue);
+            const { boxIndex, cellIndex, oldValue } = gridHistory[offset];
+            setGrid(grid => updateArray(grid, boxIndex, cellIndex, oldValue, 2));
         }
     };
     
