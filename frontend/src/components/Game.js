@@ -11,7 +11,7 @@ function Game(props) {
     const [newGame, setNewGame] = useState(true);
     const [gridHistory, setGridHistory] = useState([]);
     const [offsetMin, setOffsetMin] = useState(-1);
-    const [offset, setOffset] = useState(-1)
+    const [offset, setOffset] = useState(-1);
 
     const copyValue = (value) => {
         return value;
@@ -51,7 +51,7 @@ function Game(props) {
                 newValue: newValue
             }
             ])
-            setOffset(copyValue(offset) + 1);
+            setOffset(offset + 1);
         } else {
             addGridHistory(boxIndex, cellIndex, oldValue, newValue);
         }
@@ -113,31 +113,31 @@ function Game(props) {
             setStartingSudoku();
             setNewGame(newGame => !newGame);
             setResetSudoku(createCopy(grid, 2));
-            setOffsetMin(copyValue(gridHistory.length) - 1);
-            setOffset(copyValue(gridHistory.length) - 1);
+            const min = gridHistory.length - 1
+            setOffsetMin(copyValue(min));
+            setOffset(copyValue(min));
         }
     };
 
     const handleReset = () => {
         setGrid(createCopy(resetSudoku, 2));
         setGridHistory(sliceArray(gridHistory, 0, offsetMin + 1, 1));
-        setOffset(copyValue(gridHistory.length) - 1);
-        setOffsetMin(copyValue(gridHistory.length) - 1);
+        setOffsetMin(copyValue(offsetMin));
+        setOffset(copyValue(offsetMin));
     };
-    let n = 0;
 
     const handleUndo = () => {
         if (offset > offsetMin) {
             setOffset(Math.max(offset - 1, offsetMin + 1));
             const { boxIndex, cellIndex, oldValue } = gridHistory[offset];
-            setGrid(grid => updateArray(grid, boxIndex, cellIndex, oldValue, 2));
+            setGrid(updateArray(grid, boxIndex, cellIndex, oldValue, 2));
         }
     };
 
     const handleRedo = () => {
         setOffset(Math.min(offset + 1, gridHistory.length - 1));
         const { boxIndex, cellIndex, newValue } = gridHistory[offset];
-        setGrid(grid => updateArray(grid, boxIndex, cellIndex, newValue, 2));
+        setGrid(updateArray(grid, boxIndex, cellIndex, newValue, 2));
     };
     
     return(
